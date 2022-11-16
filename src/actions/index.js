@@ -1,4 +1,5 @@
 import streams from '../apis/streams';
+import history from '../history';
 import { 
     SIGN_IN,
     SIGN_OUT, 
@@ -22,10 +23,14 @@ export const signOut  = () => {
     };
 }
 
-export const createStream = fromValues =>async dispatch =>{
-    const response = await streams.post('/streams', fromValues);
+export const createStream = fromValues =>async (dispatch, getState) =>{
+    const {userId} = getState().auth;
+    const response = await streams.post('/streams', {...fromValues, userId});
 
     dispatch({type:CREATE_STREAM, payload: response.data});
+    // do some programmatic naviation to 
+    // get the user bact to the root route
+    history.push('/');
 }
 
 export const fetchStreams = () =>async dispatch =>{
